@@ -68,20 +68,11 @@ public class StreamsTask {
     // metoda powinna zwracać wydatki zgrupowane po użytkowniku
     // podobne do poprzedniego, ale trochę trudniejsze
     Map<User, List<Expense>> groupExpensesByUser(Collection<User> users, List<Expense> expenses) {
-        Map<User, List<Expense>> userListMap = users.stream()
-                .collect(Collectors.toMap(user -> user,
-                        user -> {
-                            List<Expense> list = new ArrayList<>();
-                            for (Expense expense : expenses) {
-                                if (expense.getUserId().equals(user.getId())) {
-                                    list.add(expense);
-                                }
-                            }
-                            return list;
-                        }));
+        Map<Long, User> userMap = users.stream()
+                .collect(Collectors.toMap(User::getId, user -> user));
 
-        userListMap.values().removeIf(expenses1 -> expenses1.size() == 0);
-        return userListMap;
+        return expenses.stream()
+                .collect(Collectors.groupingBy(expense -> userMap.get(expense.getUserId())));
 
     }
 
