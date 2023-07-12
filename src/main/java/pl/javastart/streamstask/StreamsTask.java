@@ -1,10 +1,8 @@
 package pl.javastart.streamstask;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StreamsTask {
 
@@ -38,22 +36,53 @@ public class StreamsTask {
 
     // metoda powinna zwracać listę kobiet (sprawdzając, czy imię kończy się na "a")
     Collection<User> findWomen(Collection<User> users) {
-        throw new RuntimeException("Not implemented");
+        return new HashSet<>(users.stream()
+                .collect(Collectors.partitioningBy(user -> nameEndsWithA(user.getName())))
+                .get(true));
     }
+
+    private static Map<Boolean, List<User>> getMapByGender(Collection<User> users) {
+        return users.stream()
+                .collect(Collectors.partitioningBy(user -> nameEndsWithA(user.getName())));
+    }
+
+    private static boolean nameEndsWithA(String userName) {
+        return userName.endsWith("a");
+    }
+
 
     // metoda powinna zwracać średni wiek mężczyzn (sprawdzając, czy imię nie kończy się na "a")
     Double averageMenAge(Collection<User> users) {
-        throw new RuntimeException("Not implemented");
+        return users.stream()
+                .collect(Collectors.partitioningBy(user -> nameEndsWithA(user.getName()), Collectors.averagingDouble(User::getAge)))
+                .get(false);
     }
 
     // metoda powinna zwracać wydatki zgrupowane po ID użytkownika
     Map<Long, List<Expense>> groupExpensesByUserId(Collection<User> users, List<Expense> expenses) {
-        throw new RuntimeException("Not implemented");
+        return expenses
+                .stream()
+                .collect(Collectors.groupingBy(Expense::getUserId));
     }
 
     // metoda powinna zwracać wydatki zgrupowane po użytkowniku
     // podobne do poprzedniego, ale trochę trudniejsze
     Map<User, List<Expense>> groupExpensesByUser(Collection<User> users, List<Expense> expenses) {
-        throw new RuntimeException("Not implemented");
+        Map<User, List<Expense>> userListMap = users.stream()
+                .collect(Collectors.toMap(user -> user,
+                        user -> {
+                            List<Expense> list = new ArrayList<>();
+                            for (Expense expense : expenses) {
+                                if (expense.getUserId().equals(user.getId())) {
+                                    list.add(expense);
+                                }
+                            }
+                            return list;
+                        }));
+
+        userListMap.values().removeIf(expenses1 -> expenses1.size() == 0);
+        return userListMap;
+
     }
+
 }
