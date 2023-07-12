@@ -119,7 +119,6 @@ public class StreamTaskTest {
         expenses.add(new Expense(2L, "Skarpetki", new BigDecimal("39"), ExpenseType.WEAR));
         expenses.add(new Expense(2L, "Pizza", new BigDecimal("25"), ExpenseType.FOOD));
 
-
         // when
         Map<Long, List<Expense>> expensesByUserId = streamsTask.groupExpensesByUserId(users, expenses);
 
@@ -147,7 +146,6 @@ public class StreamTaskTest {
         expenses.add(new Expense(2L, "Bluza", new BigDecimal("100"), ExpenseType.WEAR));
         expenses.add(new Expense(2L, "Skarpetki", new BigDecimal("39"), ExpenseType.WEAR));
         expenses.add(new Expense(2L, "Pizza", new BigDecimal("25"), ExpenseType.FOOD));
-
 
         // when
         Map<Long, List<Expense>> expensesByUserId = streamsTask.groupExpensesByUserId(users, expenses);
@@ -203,6 +201,4 @@ public class StreamTaskTest {
 ////        )
 ////                ).isEqualTo(2);
 //    }
-
-
 }
